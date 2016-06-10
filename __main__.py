@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 import urllib.error
+try:
+    import gevent.pywsgi
+except ImportError:
+    gevent = None
+
 
 from provider import fetch
-from vendor.bottle import abort, route, run, response
+from bottle import Bottle, abort, route, run, response
 
 
-@route('/<pro>/<z:int>/<x:int>/<y:int>')
+app = Bottle()
+
+
+@app.route('/<pro>/<z:int>/<x:int>/<y:int>')
 def main(pro, x, y, z):
     try:
         content = fetch(pro, x, y, z)
@@ -15,4 +23,9 @@ def main(pro, x, y, z):
     return content
 
 
-run(debug=True)
+
+if gevent:
+    server = gevent.pywsgi.WSGIServer(("0.0.0.0", 8080), app)
+    server.serve_forever()
+else:
+    run(app, debug=True, server='gevent')

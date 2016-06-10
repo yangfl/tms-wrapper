@@ -30,11 +30,17 @@ def tileno(lat, lon, z):
     return (x, y, z, m, n)
 
 
+def sign(x):
+    if x < 0:
+        return 'M' + str(-x)
+    else:
+        return str(x)
+
+
 @lru_cache(1024)
 def bd_tile(x, y, z):
     print('fetch:', x, y, z)
-    print(BASEURL.format(x, y, z))
-    return urllib.request.urlopen(BASEURL.format(x, y, z)).read()
+    return urllib.request.urlopen(BASEURL.format(sign(x), sign(y), sign(z))).read()
 
 
 @lru_cache(64)
@@ -44,9 +50,9 @@ def fetch(x, y, z, tile=bd_tile):
     bd_z = z + 1
 
     bd_x, bd_y, _, bd_x_m, bd_y_n = tileno(
-        *coord.wgs2bd(*coord.tms2coord(x, y, z)), bd_z)
+        *coord.gcj2bd(*coord.tms2coord(x, y, z)), bd_z)
     bd_x_max, bd_y_min, _, bd_x_max_m, bd_y_min_n = tileno(
-        *coord.wgs2bd(*coord.tms2coord(x + 1, y + 1, z)), bd_z)
+        *coord.gcj2bd(*coord.tms2coord(x + 1, y + 1, z)), bd_z)
     bd_x_max += 1
     bd_y_min -= 1
     bd_x_max_m -= 1

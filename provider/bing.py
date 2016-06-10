@@ -1,7 +1,10 @@
 import urllib.request
+from bottle import redirect
 
+from vendor.pool import Pool
 
-BASEURL = 'http://r1.tiles.ditu.live.com/tiles/r{}.png?g=100'
+BASEURL = 'http://r{}.tiles.ditu.live.com/tiles/r{}.png?g=100'
+p = Pool(4)
 
 
 def tileno(x, y, z):
@@ -15,4 +18,5 @@ def tileno(x, y, z):
 
 
 def fetch(x, y, z):
-    return urllib.request.urlopen(BASEURL.format(tileno(x, y, z))).read()
+    no = tileno(x, y, z)
+    redirect(BASEURL.format(p.get(no), no))
