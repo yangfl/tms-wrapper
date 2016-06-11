@@ -1,83 +1,53 @@
 from math import *
-from functools import lru_cache
-from PIL import Image
-import urllib.request
-import urllib.error
-from io import BytesIO
-import threading
 
 from vendor import coord
+from vendor.combine import Combine
+from vendor.pool import Pool
 
 
-R = 6378137
-BASEURL = 'http://online2.map.bdimg.com/onlinelabel/?qt=tile&x={}&y={}&z={}&styles=pl'
+R = 6378800
+BASEURL = 'http://online{}.map.bdimg.com/onlinelabel/?qt=tile&x={}&y={}&z={}&styles=pl'
+p = Pool(4)
+Tp = [
+    [-0.0015702102444, 111320.7020616939, 1704480524535203, -10338987376042340, 26112667856603880, -35149669176653700, 26595700718403920, -10725012454188240, 1800819912950474, 82.5],
+    [8.277824516172526E-4, 111320.7020463578, 6.477955746671607E8, -4.082003173641316E9, 1.077490566351142E10, -1.517187553151559E10, 1.205306533862167E10, -5.124939663577472E9, 9.133119359512032E8, 67.5],
+    [0.00337398766765, 111320.7020202162, 4481351.045890365, -2.339375119931662E7, 7.968221547186455E7, -1.159649932797253E8, 9.723671115602145E7, -4.366194633752821E7, 8477230.501135234, 52.5],
+    [0.00220636496208, 111320.7020209128, 51751.86112841131, 3796837.749470245, 992013.7397791013, -1221952.21711287, 1340652.697009075, -620943.6990984312, 144416.9293806241, 37.5],
+    [-3.441963504368392E-4, 111320.7020576856, 278.2353980772752, 2485758.690035394, 6070.750963243378, 54821.18345352118, 9540.606633304236, -2710.55326746645, 1405.483844121726, 22.5],
+    [-3.218135878613132E-4, 111320.7020701615, 0.00369383431289, 823725.6402795718, 0.46104986909093, 2351.343141331292, 1.58060784298199, 8.77738589078284, 0.37238884252424, 7.45]]
 
 
-def tileno(lat, lon, z):
-    lat -= 0.1703521
-    lon -= 0.0103876
-    r_lat = radians(lat)
-    m, x = modf(radians(lon) * R / (1 << 26 - z))
-    n, y = modf(log(tan(r_lat) + 1 / cos(r_lat)) * R / (1 << 26 - z))
-    x = int(x)
-    y = int(y)
-    m = floor(256 * m)
-    n = floor(256 * n)
-    if n:
-        n = 256 - n
-    else:
-        y -= 1
-    return (x, y, z, m, n)
-
-
-def sign(x):
+def sgn(x):
     if x < 0:
-        return 'M' + str(-x)
-    else:
-        return str(x)
+        return -1
+    return 1
 
 
-@lru_cache(1024)
-def bd_tile(x, y, z):
-    print('fetch:', x, y, z)
-    return urllib.request.urlopen(BASEURL.format(sign(x), sign(y), sign(z))).read()
+def tms2bd(x, y, z):
+    lat, lon = coord.wgs2bd(*coord.tms2wgs(x, y, z))
+    z += 1
+    for d, Kj_d in enumerate(range(75, -15, -15)):
+        if (abs(lat) >= Kj_d):
+            c = Tp[d]
+            y = abs(lat) / c[9]
+            y = (c[2] + c[3] * y + c[4] * y ** 2 + c[5] * y ** 3 +
+                 c[6] * y ** 4 + c[7] * y ** 5 + c[8] * y ** 6) * sgn(lat)
+            x = (c[0] + c[1] * abs(lon)) * sgn(lon)
+            x, m = divmod(floor(x * 2 ** (z - 18)), 256)
+            y, n = divmod(floor(y * 2 ** (z - 18)), 256)
+            n = 255 - n
+            return x, y, z, m, n
 
 
-@lru_cache(64)
-def fetch(x, y, z, tile=bd_tile):
+def bd_url_formatter(url):
+    return lambda x, y, z: url.format(p.get((x, y, z)), *map(
+        lambda x: 'M' + str(-x) if x < 0 else str(x), (x, y, z)))
+
+
+bd_combiner = Combine(bd_url_formatter(BASEURL), tms2bd)
+
+
+def fetch(x, y, z):
     if not 2 <= z <= 18:
-        raise urllib.error.HTTPError('', 404, '', '', BytesIO())
-    bd_z = z + 1
-
-    bd_x, bd_y, _, bd_x_m, bd_y_n = tileno(
-        *coord.gcj2bd(*coord.tms2coord(x, y, z)), bd_z)
-    bd_x_max, bd_y_min, _, bd_x_max_m, bd_y_min_n = tileno(
-        *coord.gcj2bd(*coord.tms2coord(x + 1, y + 1, z)), bd_z)
-    bd_x_max += 1
-    bd_y_min -= 1
-    bd_x_max_m -= 1
-    bd_y_min_n += 1
-    new_img = Image.new(
-        'RGB', (256 * (bd_x_max - bd_x), 256 * (bd_y - bd_y_min)))
-    l_thread = []
-    for bd_x_cur in range(bd_x, bd_x_max):
-        for bd_y_cur in range(bd_y, bd_y_min, -1):
-            t = threading.Thread(
-                target=lambda: tile(bd_x_cur, bd_y_cur, bd_z))
-            t.start()
-            l_thread.append(t)
-    for t in l_thread:
-        t.join()
-    for bd_x_cur in range(bd_x, bd_x_max):
-        for bd_y_cur in range(bd_y, bd_y_min, -1):
-            new_img.paste(
-                Image.open(BytesIO(tile(bd_x_cur, bd_y_cur, bd_z))),
-                (256 * (bd_x_cur - bd_x), 256 * (bd_y - bd_y_cur)))
-    content = BytesIO()
-    new_img.crop((
-        bd_x_m, bd_y_n,
-        256 * (bd_x_max - bd_x - 1) + bd_x_max_m,
-        256 * (bd_y - bd_y_min - 1) + bd_y_min_n)
-    ).resize((256, 256), Image.ANTIALIAS).save(content, format='PNG')
-    content.seek(0)
-    return content.read()
+        raise ValueError
+    return bd_combiner.get(x, y, z)

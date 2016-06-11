@@ -19,6 +19,8 @@ def main(pro, x, y, z):
         content = fetch(pro, x, y, z)
     except urllib.error.HTTPError as err:
         abort(err.code, err.msg)
+    except ValueError:
+        abort(404)
     response.set_header('Content-Type', 'image/png')
     return content
 

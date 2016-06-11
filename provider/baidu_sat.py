@@ -1,21 +1,13 @@
 from . import baidu
-from functools import lru_cache
-import urllib.request
-import urllib.error
 
 
-BASEURL = 'http://shangetu0.map.bdimg.com/it/u=x={};y={};z={};v=009;type=sate&fm=46'
+BASEURL = 'http://shangetu{}.map.bdimg.com/it/u=x={};y={};z={};v=009;type=sate&fm=46'
 
 
-@lru_cache(1024)
-def bd_sat_tile(x, y, z):
-    print('fetch:', x, y, z)
-    print(BASEURL.format(x, y, z))
-    return urllib.request.urlopen(BASEURL.format(x, y, z)).read()
+bd_combiner = baidu.Combine(baidu.bd_url_formatter(BASEURL), baidu.tms2bd)
 
 
-@lru_cache(64)
 def fetch(x, y, z):
     if not 2 <= z <= 18:
-        raise urllib.error.HTTPError('', 404, '', '', BytesIO())
-    return baidu.fetch(x, y, z, bd_sat_tile)
+        raise ValueError
+    return bd_combiner.get(x, y, z)

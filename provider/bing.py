@@ -1,4 +1,3 @@
-import urllib.request
 from bottle import redirect
 
 from vendor.pool import Pool
@@ -17,6 +16,9 @@ def tileno(x, y, z):
     return ''.join(index)
 
 
+def bing_url(x, y, z):
+    return BASEURL.format(p.get((x, y, z)), tileno(x, y, z))
+
+
 def fetch(x, y, z):
-    no = tileno(x, y, z)
-    redirect(BASEURL.format(p.get(no), no))
+    redirect(bing_url(x, y, z))
