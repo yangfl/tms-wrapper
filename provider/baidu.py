@@ -25,7 +25,7 @@ def sgn(x):
 
 def tms2bd(x, y, z):
     lat, lon = coord.wgs2bd(*coord.tms2wgs(x, y, z))
-    z += 1
+    #z += 1
     for d, Kj_d in enumerate(range(75, -15, -15)):
         if (abs(lat) >= Kj_d):
             c = Tp[d]

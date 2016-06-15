@@ -30,4 +30,4 @@ if gevent:
     server = gevent.pywsgi.WSGIServer(("0.0.0.0", 8080), app)
     server.serve_forever()
 else:
-    run(app, debug=True, server='gevent')
+    run(app, debug=True)
