@@ -3,7 +3,9 @@
   <head>
     <title>OpenLayers 3 example</title>
 
-    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css" />
+    <link rel="icon" href="data:,">
+
+    <link rel="stylesheet" href="http://openlayers.org/en/latest/css/ol.css" />
     <link rel="stylesheet" href="http://cdn.rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.css" />
   </head>
 
@@ -12,191 +14,189 @@
     <!-- http://www.cnblogs.com/jz1108/archive/2011/07/02/2095376.html -->
     <div id="map" class="map"></div>
 
-    <script src="http://openlayers.org/en/v3.16.0/build/ol.js"></script>
+    <script src="http://openlayers.org/en/latest/build/ol.js"></script>
     <script src="http://cdn.rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js"></script>
     <script>
-      var map = new ol.Map({
-        target: 'map',
-        layers: [
-          new ol.layer.Group({
-            title: 'Google',
-            layers: [
-              new ol.layer.Tile({
-                title: 'Google Map',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  urls: [
-                    'http://mt0.google.cn/vt/x={x}&y={y}&z={z}',
-                    'http://mt1.google.cn/vt/x={x}&y={y}&z={z}',
-                    'http://mt2.google.cn/vt/x={x}&y={y}&z={z}',
-                    'http://mt3.google.cn/vt/x={x}&y={y}&z={z}',
-                  ]
-                })
-              }),
-              new ol.layer.Tile({
-                title: 'Google Map Shifted',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  url: 'http://127.0.0.1:8080/google_shifted/{z}/{x}/{y}'
-                })
-              }),
-              new ol.layer.Tile({
-                title: 'Google Sat',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  urls: [
-                    'http://mt0.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-                    'http://mt1.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-                    'http://mt2.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-                    'http://mt3.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-                  ]
-                })
-              }),
+let map = new ol.Map({
+  target: 'map',
+  layers: [
+    new ol.layer.Group({
+      title: 'Google',
+      layers: [
+        new ol.layer.Tile({
+          title: 'Google Map',
+          type: 'base',
+          source: new ol.source.XYZ({
+            urls: [
+              'http://mt0.google.cn/vt/x={x}&y={y}&z={z}',
+              'http://mt1.google.cn/vt/x={x}&y={y}&z={z}',
+              'http://mt2.google.cn/vt/x={x}&y={y}&z={z}',
+              'http://mt3.google.cn/vt/x={x}&y={y}&z={z}',
             ]
-          }),
-          new ol.layer.Group({
-            title: 'Bing (Wrapper)',
-            layers: [
-              new ol.layer.Tile({
-                title: 'Bing',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  minZoom: 1,
-                  url: 'http://127.0.0.1:8080/bing/{z}/{x}/{y}'
-                })
-              }),
-              new ol.layer.Tile({
-                title: 'Bing Shifted',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  minZoom: 1,
-                  url: 'http://127.0.0.1:8080/bing_shifted/{z}/{x}/{y}'
-                })
-              }),
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'Google Map (Wrapper)',
+          type: 'base',
+          source: new ol.source.XYZ({
+            url: 'http://127.0.0.1:8080/google_shifted/{z}/{x}/{y}'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'Google Sat',
+          type: 'base',
+          source: new ol.source.XYZ({
+            urls: [
+              'http://mt0.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
+              'http://mt1.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
+              'http://mt2.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
+              'http://mt3.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
             ]
-          }),
-          new ol.layer.Group({
-            title: 'Baidu (Wrapper)',
-            layers: [
-              new ol.layer.Tile({
-                title: 'Baidu Map',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  minZoom: 2,
-                  maxZoom: 19,
-                  url: 'http://127.0.0.1:8080/baidu/{z}/{x}/{y}'
-                })
-              }),
-              new ol.layer.Tile({
-                title: 'Baidu Sat',
-                type: 'base',
-                source: new ol.source.XYZ({
-                  minZoom: 2,
-                  maxZoom: 19,
-                  url: 'http://127.0.0.1:8080/baidu_sat/{z}/{x}/{y}'
-                })
-              }),
-            ]
-          }),
-          new ol.layer.Group({
-            title: 'Tian',
-            layers: [
-              new ol.layer.Group({
-                title: 'Tian Map',
-                type: 'base',
-                combine: true,
-                layers: [
-                  new ol.layer.Tile({
-                    title: 'Tian',
-                    maxZoom: 19,
-                    source: new ol.source.XYZ({
-                      urls: [
-                        'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t1.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t3.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t4.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t5.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t6.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                        'http://t7.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                      ]
-                    })
-                  }),
-                  new ol.layer.Tile({
-                    title: 'Tian Loc',
-                    maxZoom: 19,
-                    source: new ol.source.XYZ({
-                      urls: [
-                        'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t1.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t3.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t4.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t5.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t6.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                        'http://t7.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                      ]
-                    })
-                  }),
+          })
+        }),
+      ]
+    }),
+    new ol.layer.Group({
+      title: 'Bing (Wrapper)',
+      layers: [
+        new ol.layer.Tile({
+          title: 'Bing',
+          type: 'base',
+          source: new ol.source.XYZ({
+            minZoom: 1,
+            url: 'http://127.0.0.1:8080/bing/{z}/{x}/{y}'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'Bing Shifted',
+          type: 'base',
+          source: new ol.source.XYZ({
+            minZoom: 1,
+            url: 'http://127.0.0.1:8080/bing_shifted/{z}/{x}/{y}'
+          })
+        }),
+      ]
+    }),
+    new ol.layer.Group({
+      title: 'Baidu (Wrapper)',
+      layers: [
+        new ol.layer.Tile({
+          title: 'Baidu Map',
+          type: 'base',
+          source: new ol.source.XYZ({
+            minZoom: 2,
+            maxZoom: 19,
+            url: 'http://127.0.0.1:8080/baidu/{z}/{x}/{y}'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'Baidu Sat',
+          type: 'base',
+          source: new ol.source.XYZ({
+            minZoom: 2,
+            maxZoom: 19,
+            url: 'http://127.0.0.1:8080/baidu_sat/{z}/{x}/{y}'
+          })
+        }),
+      ]
+    }),
+    new ol.layer.Group({
+      title: 'Tian',
+      layers: [
+        new ol.layer.Group({
+          title: 'Tian Map',
+          type: 'base',
+          combine: true,
+          layers: [
+            new ol.layer.Tile({
+              title: 'Tian',
+              source: new ol.source.XYZ({
+                maxZoom: 18,
+                urls: [
+                  'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t1.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t3.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t4.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t5.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t6.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
+                  'http://t7.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
                 ]
-              }),
-              new ol.layer.Group({
-                title: 'Tian Sat',
-                type: 'base',
-                combine: true,
-                layers: [
-                  new ol.layer.Tile({
-                    title: 'Tian Sat',
-                    maxZoom: 19,
-                    source: new ol.source.XYZ({
-                      urls: [
-                        'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t1.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t2.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t3.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t4.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t5.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t6.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                        'http://t7.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                      ]
-                    })
-                  }),
-                  new ol.layer.Tile({
-                    title: 'Tian Sat Loc',
-                    maxZoom: 19,
-                    source: new ol.source.XYZ({
-                      urls: [
-                        'http://t0.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t1.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t2.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t3.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t4.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t5.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t6.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                        'http://t7.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                      ]
-                    })
-                  }),
+              })
+            }),
+            new ol.layer.Tile({
+              title: 'Tian Loc',
+              source: new ol.source.XYZ({
+                maxZoom: 18,
+                urls: [
+                  'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t1.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t3.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t4.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t5.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t6.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+                  'http://t7.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
                 ]
-              }),
-            ]
-          }),
-          new ol.layer.Tile({
-            title: 'OSM',
-            type: 'base',
-            source: new ol.source.OSM
-          }),
-        ],
-        controls: [
-          new ol.control.LayerSwitcher,
-        ],
-        view: new ol.View({
-          center: ol.proj.fromLonLat([121, 31]),
-          zoom: 14
-        })
-      })
+              })
+            }),
+          ]
+        }),
+        new ol.layer.Group({
+          title: 'Tian Sat',
+          type: 'base',
+          combine: true,
+          layers: [
+            new ol.layer.Tile({
+              title: 'Tian Sat',
+              maxZoom: 19,
+              source: new ol.source.XYZ({
+                urls: [
+                  'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t1.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t2.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t3.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t4.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t5.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t6.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                  'http://t7.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
+                ]
+              })
+            }),
+            new ol.layer.Tile({
+              title: 'Tian Sat Loc',
+              maxZoom: 19,
+              source: new ol.source.XYZ({
+                urls: [
+                  'http://t0.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t1.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t2.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t3.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t4.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t5.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t6.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                  'http://t7.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
+                ]
+              })
+            }),
+          ]
+        }),
+      ]
+    }),
+    new ol.layer.Tile({
+      title: 'OSM',
+      type: 'base',
+      source: new ol.source.OSM
+    }),
+  ],
+  controls: [
+    new ol.control.LayerSwitcher,
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([121, 31]),
+    zoom: 14
+  })
+})
     </script>
   </body>
 </html>
-
-
