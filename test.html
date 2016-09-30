@@ -27,12 +27,7 @@ let map = new ol.Map({
           title: 'Google Map',
           type: 'base',
           source: new ol.source.XYZ({
-            urls: [
-              'http://mt0.google.cn/vt/x={x}&y={y}&z={z}',
-              'http://mt1.google.cn/vt/x={x}&y={y}&z={z}',
-              'http://mt2.google.cn/vt/x={x}&y={y}&z={z}',
-              'http://mt3.google.cn/vt/x={x}&y={y}&z={z}',
-            ]
+            url: 'http://mt{0-3}.google.cn/vt/x={x}&y={y}&z={z}',
           })
         }),
         new ol.layer.Tile({
@@ -46,12 +41,7 @@ let map = new ol.Map({
           title: 'Google Sat',
           type: 'base',
           source: new ol.source.XYZ({
-            urls: [
-              'http://mt0.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-              'http://mt1.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-              'http://mt2.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-              'http://mt3.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
-            ]
+            url: 'http://mt{0-3}.google.cn/vt/lyrs=s&x={x}&y={y}&z={z}',
           })
         }),
       ]
@@ -112,32 +102,14 @@ let map = new ol.Map({
               title: 'Tian',
               source: new ol.source.XYZ({
                 maxZoom: 18,
-                urls: [
-                  'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t1.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t2.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t3.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t4.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t5.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t6.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                  'http://t7.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
-                ]
+                url: 'http://t{0-7}.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}',
               })
             }),
             new ol.layer.Tile({
               title: 'Tian Loc',
               source: new ol.source.XYZ({
                 maxZoom: 18,
-                urls: [
-                  'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t1.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t3.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t4.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t5.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t6.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                  'http://t7.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
-                ]
+                url: 'http://t{0-7}.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
               })
             }),
           ]
@@ -151,32 +123,14 @@ let map = new ol.Map({
               title: 'Tian Sat',
               maxZoom: 19,
               source: new ol.source.XYZ({
-                urls: [
-                  'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t1.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t2.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t3.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t4.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t5.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t6.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                  'http://t7.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
-                ]
+                url: 'http://t{0-7}.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}',
               })
             }),
             new ol.layer.Tile({
               title: 'Tian Sat Loc',
               maxZoom: 19,
               source: new ol.source.XYZ({
-                urls: [
-                  'http://t0.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t1.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t2.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t3.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t4.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t5.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t6.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                  'http://t7.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
-                ]
+                url: 'http://t{0-7}.tianditu.com/DataServer?T=cia_w&x={x}&y={y}&l={z}',
               })
             }),
           ]
@@ -191,6 +145,7 @@ let map = new ol.Map({
   ],
   controls: [
     new ol.control.LayerSwitcher,
+    new ol.control.Zoom,
   ],
   view: new ol.View({
     center: ol.proj.fromLonLat([121, 31]),
